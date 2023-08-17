@@ -1,0 +1,23 @@
+{
+  "name": "apiconnectormiddleware",
+  "version": "1.0.0",
+  "description": "Montar um middleware ou biblioteca. Implementar uma camada de integração com API's de terceiros, que realiza a manipulação dos dados e responde essas informações tratadas através de outra API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guilhermefassis/ApiConnectorMiddleware.git"
+  },
+  "keywords": [
+    "middleware",
+    "api"
+  ],
+  "author": "Guilherme Assis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guilhermefassis/ApiConnectorMiddleware/issues"
+  },
+  "homepage": "https://github.com/guilhermefassis/ApiConnectorMiddleware#readme"
+}
