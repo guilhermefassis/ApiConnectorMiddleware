@@ -97,13 +97,18 @@ async function configureIntegrationMiddleware(req, res, next) {
         if (apiConfig.apiVerb === 'GET') {
             const requestFactory = new RequestFactory(new GetRequestStrategy());
             const request = requestFactory.createRequest(apiConfig);
-            const requestResponse = await callRequest(request);
-            console.log(requestResponse.data);
-            req.integrationData = requestResponse.data;
-            next();
+            try {
+                const requestResponse = await callRequest(request);
+                console.log(requestResponse.data);
+                req.integrationData = requestResponse.data;
+                next();
+            } catch (error) {
+                console.error('Erro na chamada de requisição:', error.message);
+                res.status(500).json({ error: 'Erro interno na chamada de requisição' });
+            }
         }
     } catch (error) {
-        console.log('Erro:', error.message);
+        console.error('Erro no middleware:', error.message);
         res.status(500).json({ error: 'Erro interno' });
     }
 }
