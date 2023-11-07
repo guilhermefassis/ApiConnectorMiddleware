@@ -90,7 +90,6 @@ function extractParamName(field) {
 function isArrayIndexedField(field) {
     return field.includes("[");
 }
-
 module.exports = {
     dataMappingMiddleware
 }

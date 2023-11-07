@@ -2,7 +2,6 @@ const axios = require('axios');
 
 function callRequest(request){
     return request.get();   
-
 }
 class ApiConfigBuilder {
     constructor() {
@@ -86,10 +85,9 @@ async function configureIntegrationMiddleware(req, res, next) {
             !apiConfig.apiUrl ||
             !apiConfig.apiRoute ||
             !apiConfig.apiVerb ||
-            !apiConfig.queryString ||
             !apiConfig.headers ||
             !apiConfig.fields) {
-            return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
+            return res.status(400).json({ error: 'Campos obrigatorios não preenchidos.' });
         }
 
         req.apiConfig = apiConfig;
@@ -97,19 +95,13 @@ async function configureIntegrationMiddleware(req, res, next) {
         if (apiConfig.apiVerb === 'GET') {
             const requestFactory = new RequestFactory(new GetRequestStrategy());
             const request = requestFactory.createRequest(apiConfig);
-            try {
-                const requestResponse = await callRequest(request);
-                console.log(requestResponse.data);
-                req.integrationData = requestResponse.data;
-                next();
-            } catch (error) {
-                console.error('Erro na chamada de requisição:', error.message);
-                res.status(500).json({ error: 'Erro interno na chamada de requisição' });
-            }
+           
+            const requestResponse = await callRequest(request);
+            req.integrationData = requestResponse.data;
+            next();
         }
     } catch (error) {
-        console.error('Erro no middleware:', error.message);
-        res.status(500).json({ error: 'Erro interno' });
+        res.status(error.response.status).json({error: error.response.statusText});
     }
 }
 

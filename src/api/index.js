@@ -16,10 +16,10 @@ app.post('/middleware', (req, res) => {
     if (req.integrationData) {
         res.send(req.integrationData);
     } else {
-        res.send('No Response' + req.integrationData);
+        res.send('No Response');
     }
 });
 
 app.listen(3001, () => {
-    console.log('API rodando na porta 3001');
+    console.log('API rodando');
 });
