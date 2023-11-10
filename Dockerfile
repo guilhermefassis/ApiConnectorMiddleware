@@ -4,6 +4,6 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-EXPOSE 8080
+EXPOSE 3001
 
 CMD ["node", "src/api/index.js"]

@@ -58,7 +58,11 @@ function buildMappedResponse(apiConfig) {
 
 function addFieldToResponse(field, apiConfig, responseBody) {
     const fieldName = extractParamName(field.split('.').pop()) || field.split('.').pop();
-    responseBody[apiConfig.apiName][fieldName] = getNestedValue(apiConfig.response, field);
+    if (isArrayIndexedField(fieldName)) {
+        responseBody[apiConfig.apiName] = getNestedValue(apiConfig.response, field);
+    } else {
+        responseBody[apiConfig.apiName][fieldName] = getNestedValue(apiConfig.response, field);
+    }
     
     return responseBody;
 }
@@ -69,9 +73,12 @@ function getNestedValue(json, field) {
 
     for (const nestedField of nestedFields) {
         if(isArrayIndexedField(nestedField) && currentValue.hasOwnProperty(extractParamName(nestedField))) {
-            currentValue  = currentValue[extractParamName(nestedField)][extractIndexFromField(nestedField)];
-        } else if (currentValue.hasOwnProperty(nestedField)) {
-            currentValue = currentValue[nestedField];
+            const extractedIndex = extractIndexFromField(nestedField)
+            currentValue  = currentValue[extractParamName(nestedField)].slice(extractedIndex.split('-')[0], extractedIndex.split('-')[1] || parseInt(extractedIndex.split('-')[0]) + 1);
+        } else if (currentValue.hasOwnProperty(nestedField) || checkIfArrayContainsProperty(currentValue, nestedField)) {
+            currentValue = addPropertyInJSON(nestedField, currentValue);
+        } else if(isArrayIndexedField(nestedField)) {
+            currentValue = currentValue[extractIndexFromField(nestedField)];
         } else {   
             throw new Error(`Field "${nestedField}" not found in the JSON`);
         }
@@ -90,6 +97,30 @@ function extractParamName(field) {
 function isArrayIndexedField(field) {
     return field.includes("[");
 }
+
+function addPropertyInJSON(field, json) {
+    var newArrray = []
+    if(Array.isArray(json)) {
+        json.forEach(object => {
+            if (object.hasOwnProperty(field)) {
+                newArrray.push(object[field]);
+            }
+        });
+        return newArrray;
+    } else {
+        return json[field];
+    }
+}
+
+function checkIfArrayContainsProperty(array, field) {
+    for (const object of array) {
+        if (object.hasOwnProperty(field)) {
+          return true;
+        }
+      }
+      return false;
+}
+
 module.exports = {
     dataMappingMiddleware
 }
