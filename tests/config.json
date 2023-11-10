@@ -1,0 +1,6 @@
+{
+    "parameters": {
+        "domain": "localhost:3001",
+		"protocol": "http"
+    }
+}
